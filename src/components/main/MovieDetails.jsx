@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Star from "../Star";
 import Loader from "../Loader";
+import { useKey } from "../customHooks/useKey";
 
 const MovieDetails = ({ selectedID, onClose, onAddWatched, watched }) => {
   const [loading, setLoading] = useState(false);
@@ -36,6 +37,8 @@ const MovieDetails = ({ selectedID, onClose, onAddWatched, watched }) => {
     Director: director,
     Genre: genre,
   } = movie;
+
+  useKey("Escape", onClose);
 
   function handleShareDetails() {
     const newWatchedMovie = {

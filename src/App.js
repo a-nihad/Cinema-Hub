@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Main from "./components/main/Main";
 import NavBar from "./components/nav/NavBar";
 import Logo from "./components/nav/Logo";
@@ -11,55 +11,17 @@ import Error from "./components/Error";
 import MovieDetails from "./components/main/MovieDetails";
 import WatchedMovie from "./components/main/WatchedMovie";
 import WatchedSummary from "./components/main/WatchedSummary";
+import { useMovies } from "./components/customHooks/useMovies";
+import { useLocalStorageState } from "./components/customHooks/useLocalStorageState";
 
 function App() {
   const [query, setQuery] = useState("");
-  const [movies, setMovies] = useState("");
   const [isSearch, setIsSearch] = useState(false);
-  const [isLoader, setIsLoader] = useState(false);
-  const [error, setError] = useState("");
   const [selectedID, setSelectedID] = useState("");
-  const [watched, setWatched] = useState(() => {
-    const storeValue = localStorage.getItem("watched");
-    return JSON.parse(storeValue) || []
-  });
 
-  useEffect(() => {
-    async function fetching() {
-      try {
-        setIsLoader(true);
-        const res = await fetch(
-          `https://www.omdbapi.com/?apikey=36cd245a&s=${query}`,
-        );
-        if (!res.ok)
-          throw new Error("Somthing went wrong with fetching movies");
-
-        const data = await res.json();
-        if (data.Response === "False") throw new Error("Movie not found!");
-
-        setMovies(data.Search);
-        setError("");
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setIsLoader(false);
-      }
-    }
-
-    if (query.length < 3) {
-      setError("");
-      setMovies([]);
-      return;
-    }
-
-    setSelectedID("");
-    fetching();
-  }, [query]);
-
-  // Add LocalStorage
-  useEffect(() => {
-    localStorage.setItem("watched", JSON.stringify(watched));
-  }, [watched]);
+  // Custom Hooks
+  const { movies, isLoader, error } = useMovies(query, handleClose);
+  const [watched, setWatched] = useLocalStorageState([], "watched");
 
   function handleSelectedID(id) {
     setSelectedID(selectedID !== id && id);
@@ -90,14 +52,14 @@ function App() {
         <NumResult movies={movies} />
       </NavBar>
       <Main>
-        <Box >
+        <Box>
           {error && <Error message={error} />}
           {isLoader && <Loader />}
           {!isLoader && !error && (
             <MovieList movies={movies} onSelectedID={handleSelectedID} />
           )}
         </Box>
-        <Box >
+        <Box>
           {selectedID ? (
             <MovieDetails
               selectedID={selectedID}
