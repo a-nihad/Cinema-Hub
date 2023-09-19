@@ -15,11 +15,14 @@ import WatchedSummary from "./components/main/WatchedSummary";
 function App() {
   const [query, setQuery] = useState("");
   const [movies, setMovies] = useState("");
-  const [watched, setWatched] = useState([]);
   const [isSearch, setIsSearch] = useState(false);
   const [isLoader, setIsLoader] = useState(false);
   const [error, setError] = useState("");
   const [selectedID, setSelectedID] = useState("");
+  const [watched, setWatched] = useState(() => {
+    const storeValue = localStorage.getItem("watched");
+    return JSON.parse(storeValue) || []
+  });
 
   useEffect(() => {
     async function fetching() {
@@ -53,6 +56,11 @@ function App() {
     fetching();
   }, [query]);
 
+  // Add LocalStorage
+  useEffect(() => {
+    localStorage.setItem("watched", JSON.stringify(watched));
+  }, [watched]);
+
   function handleSelectedID(id) {
     setSelectedID(selectedID !== id && id);
   }
@@ -82,14 +90,14 @@ function App() {
         <NumResult movies={movies} />
       </NavBar>
       <Main>
-        <Box query={query}>
+        <Box >
           {error && <Error message={error} />}
           {isLoader && <Loader />}
           {!isLoader && !error && (
             <MovieList movies={movies} onSelectedID={handleSelectedID} />
           )}
         </Box>
-        <Box query={query}>
+        <Box >
           {selectedID ? (
             <MovieDetails
               selectedID={selectedID}

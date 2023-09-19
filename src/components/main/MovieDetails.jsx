@@ -61,14 +61,14 @@ const MovieDetails = ({ selectedID, onClose, onAddWatched, watched }) => {
       {loading ? (
         <Loader />
       ) : (
-        <div className="rounded-xl bg-primary-200 text-left">
+        <div className="rounded-xl bg-primary-200 ">
           <div className="flex gap-5 rounded-t-xl bg-primary-100 ">
             <img
               src={poster}
               alt={title}
               className="w-[200px] rounded-tl-xl  "
             />
-            <div className="space-y-6 py-6 text-lg">
+            <div className="space-y-6 py-8 text-lg">
               <h1 className="pr-5 text-2xl font-bold"> {title} </h1>
               <h1>
                 {released} . <span> {runtime} </span>
