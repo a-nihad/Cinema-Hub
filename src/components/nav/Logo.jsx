@@ -4,7 +4,7 @@ const Logo = () => {
   return (
     <>
       <h1 className="w-max rounded-sm bg-yellow px-1 text-xl font-extrabold">
-        IMDb+
+        Cinema Hub
       </h1>
     </>
   );
